@@ -8,8 +8,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    ListView mListView;
+    List<Task> tasks;
+    TaskAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mListView = (ListView) findViewById(R.id.mylistview);
+        ShowListtasks();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -49,4 +59,22 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    private List<Task> genererTasks(){
+        tasks= new ArrayList<Task>();
+        tasks.add(new Task("Florent", false));
+        tasks.add(new Task("Kevin", false));
+        tasks.add(new Task("Logan", false));
+        tasks.add(new Task("Matthieu",true));
+        tasks.add(new Task("Willy", false));
+        return tasks;
+    }
+
+    private void ShowListtasks(){
+        tasks = genererTasks();
+        adapter = new TaskAdapter(MainActivity.this, tasks);
+        mListView.setAdapter(adapter);
+    }
+
 }
