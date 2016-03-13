@@ -1,5 +1,6 @@
 package com.example.mattm.todo;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -27,15 +29,52 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         mListView = (ListView) findViewById(R.id.mylistview);
         ShowListtasks();
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(onAddingListener());
+
+    }
+
+
+    private View.OnClickListener onAddingListener() {
+        return new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(MainActivity.this);
+                dialog.setContentView(R.layout.add_task);
+                dialog.setTitle("Add a Task");
+                dialog.setCancelable(false);
+                EditText tasktext = (EditText) dialog.findViewById(R.id.tasktext);
+                View btnAdd = dialog.findViewById(R.id.btn_ok);
+                View btnCancel = dialog.findViewById(R.id.btn_cancel);
+
+
+                btnAdd.setOnClickListener(onConfirmListener(tasktext, dialog));
+                btnCancel.setOnClickListener(onCancelListener(dialog));
+
+                dialog.show();
             }
-        });
+        };
+    }
+
+    private View.OnClickListener onConfirmListener(final EditText tasktext, final Dialog dialog) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Task task = new Task(tasktext.getText().toString().trim(),false);
+                tasks.add(task);
+                adapter.notifyDataSetChanged();
+                dialog.dismiss();
+            }
+        };
+    }
+
+    private View.OnClickListener onCancelListener(final Dialog dialog) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        };
     }
 
     @Override
